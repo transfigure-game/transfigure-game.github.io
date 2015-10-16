@@ -1,0 +1,11 @@
+body {
+	overflow: hidden;
+}
+
+#game {
+	padding: 0;
+}
+
+#controls {
+	padding: 1rem 1.5rem;
+}
