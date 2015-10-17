@@ -350,7 +350,7 @@
 
 		// Set to false to disable panning
 		this.enablePan = true;
-		this.keyPanSpeed = 7.0;	// pixels moved per arrow key push
+		this.keyPanSpeed = 100.0;	// pixels moved per arrow key push
 
 		// Set to true to automatically rotate around the target
 		// If auto-rotate is enabled, you must call controls.update() in your animation loop
@@ -361,7 +361,7 @@
 		this.enableKeys = true;
 
 		// The four arrow keys
-		this.keys = { LEFT: 37, UP: 38, RIGHT: 39, BOTTOM: 40 };
+		this.keys = { LEFT: 65, UP: 87, RIGHT: 68, DOWN: 83 };
 
 		// Mouse buttons
 		this.mouseButtons = { ORBIT: THREE.MOUSE.LEFT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.RIGHT };
@@ -614,7 +614,7 @@
 					scope.update();
 					break;
 
-				case scope.keys.BOTTOM:
+				case scope.keys.DOWN:
 					pan( 0, - scope.keyPanSpeed );
 					scope.update();
 					break;
