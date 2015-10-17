@@ -59,29 +59,46 @@ Transfigure = Class.extend({
 		this.scene.add(this.sceneObjects.floor);
 
 		// Create ambient light
-		var ambientLight = new THREE.AmbientLight(0x404040); // Soft white light
-		//var ambientLight = new THREE.AmbientLight(0xFFFFFF); // Full white
+		//var ambientLight = new THREE.AmbientLight(0x404040); // Soft white light
+		var ambientLight = new THREE.AmbientLight(0xFFFFFF); // Full white
 		this.scene.add(ambientLight);
 
 		// Create the player
-		var playerGeometry = new THREE.BoxGeometry(this.gridCellSize * .75, this.gridCellSize * .75, this.gridCellSize * .75);
-		//var playerMaterial = new THREE.MeshNormalMaterial();
-		var playerMaterial = new THREE.MeshLambertMaterial({
+		this.sceneObjects.player = new THREE.Object3D();
+
+		// Create the cube to represent the player
+		var playerCubeGeometry = new THREE.BoxGeometry(this.gridCellSize * .75, this.gridCellSize * .75, this.gridCellSize * .75);
+		var playerCubeMaterial = new THREE.MeshLambertMaterial({
 			color: 0x00AAFF,
 		});
-		this.sceneObjects.player = new THREE.Mesh(playerGeometry, playerMaterial);
+		var playerCube = new THREE.Mesh(playerCubeGeometry, playerCubeMaterial);
+		this.sceneObjects.player.add(playerCube);
+
+		// Add a light to the player
+		var playerLight = new THREE.PointLight(0xFFFFFF, 3, this.gridCellSize * 4);
+		playerLight.position.z = this.gridCellSize * 3;
+		this.sceneObjects.player.add(playerLight);
+
+		//playerLight.position.set(playerMapPosition.x, playerMapPosition.y, this.gridCellSize * 3);
+		//this.scene.add(playerLight);
+
+
+
+		// Position the player
 		var playerMapPosition = this.mapPositionToGridPosition(0, 0);
 		this.sceneObjects.player.position.x = playerMapPosition.x;
 		this.sceneObjects.player.position.y = playerMapPosition.y;
-		this.sceneObjects.player.position.z = playerGeometry.vertices[0].x;
-		this.sceneObjects.player.velocity = new THREE.Vector2(this.gridCellSize * .1, this.gridCellSize * .075);
+		this.sceneObjects.player.position.z = playerCubeGeometry.vertices[0].x;
+
+		// Add the player to the scene
 		this.scene.add(this.sceneObjects.player);
 
-		var playerLight = new THREE.PointLight(0xFFFFFF, 3, this.gridCellSize * 4);
+
+
+		
 		var finishLight = new THREE.PointLight(0xFFFFFF, 3, this.gridCellSize * 4);
 
-		playerLight.position.set(playerMapPosition.x, playerMapPosition.y, this.gridCellSize * 3);
-		this.scene.add(playerLight);
+		
 
 		// Create the finish
 		//var finishGeometry = new THREE.SphereGeometry(this.gridCellSize * .75 / 2, 32, 32);

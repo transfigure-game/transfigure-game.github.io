@@ -1,8 +1,8 @@
-[![Transfigure Logo](https://www.transfigure.game/images/github/transfigure.png)](https://github.com/transfigure-game)
+[![Transfigure Logo](https://transfigure-game.github.io/images/github/transfigure.png)](https://github.com/transfigure-game)
 
 # Live Version
 
-https://www.transfigure.game/
+https://transfigure-game.github.io
 
 # Purpose
 
@@ -22,4 +22,4 @@ Feel free to create an issue in Github.
 
 # Screenshots
 
-[![2015-09-24](https://www.transfigure.game/images/screenshots/2015-09-24-a.png)]
+[![2015-09-24](https://transfigure-game.github.io/images/screenshots/2015-09-24-a.png)]
