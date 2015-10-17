@@ -11,16 +11,19 @@
 	    
 	    <!-- Styles -->
 	    <link rel="stylesheet" type="text/css" href="../styles/fonts/lato/lato.css" />
-	    <link rel="stylesheet" type="text/css" href="../styles/semantic-ui/semantic.min.css" />
+	    <link rel="stylesheet" type="text/css" href="../styles/semantic-ui/semantic-ui.css" />
 	    <link rel="stylesheet" type="text/css" href="../styles/transfigure.css" />
 	    <link rel="stylesheet" type="text/css" href="styles/game.css" />
 
 	    <!-- Scripts -->
-	    <script src="../scripts/jquery/jquery-2.1.4.min.js"></script>
-	    <script src="../scripts/semantic-ui/semantic.min.js"></script>
+	    <script src="../scripts/jquery/jQuery.js"></script>
+	    <script src="../scripts/semantic-ui/semantic-ui.js"></script>
 	    <script src="../scripts/objects/Class.js"></script>
-	    <script src="../scripts/three/three.min.js"></script>
-	    <script src="scripts/Game.js"></script>
+	    <script src="../scripts/three/Three.js"></script>
+	    <script src="../scripts/three/CombinedCamera.js"></script>
+	    <script src="../scripts/three/OrbitControls.js"></script>
+	    <script src="scripts/Transfigure.js"></script>
+	    <script src="scripts/TransfigureSettings.js"></script>
 	    
 	</head>
 
@@ -51,12 +54,20 @@
 				<div id="controls" class="three wide column">
 					<div class="ui form">
 						<div style="overflow: auto">
-							<h1 style="font-size: 1.5rem; float: left;">Camera</h1>
+							<h1 style="font-size: 1.5rem; float: left;">Controls</h1>
 							<i class="large chevron right circle icon" style="cursor: pointer; float: right;"></i>
+
+							<div class="ui divider"></div>
+
+							<h2 style="font-size: 1.25rem;">Camera</h2>
 						</div>
 
 						<div class="ui segment">
 							<div class="field">
+								<a id="cameraResetButton" class="ui button">Reset Camera</a>
+							</div>
+							<div class="field">
+
 								<div class="ui toggle checkbox">
 									<input type="checkbox" checked name="animate" tabindex="0" class="hidden">
 									<label>Animate</label>
@@ -68,14 +79,14 @@
 								<label for="view">View</label>
 								<div class="field">
 									<div class="ui radio checkbox">
-										<input type="radio" name="view" checked="" tabindex="0" class="hidden">
-										<label class="popup" data-content="Hello. This an inverted popup">Orthographic</label>
+										<input type="radio" name="cameraView" value="perspective" tabindex="0" class="hidden" checked>
+										<label class="popup" data-content="When the human eye views a scene, objects in the distance appear smaller than objects close by - this is known as perspective. While orthographic projection ignores this effect to allow accurate measurements, perspective projection shows distant objects as smaller to provide additional realism.">Perspective</label>
 									</div>
 								</div>
 								<div class="field">
 									<div class="ui radio checkbox">
-										<input type="radio" name="view" tabindex="0" class="hidden">
-										<label class="popup" data-content="Hello. This an inverted popup">Perspective</label>
+										<input type="radio" name="cameraView" value="orthographic" tabindex="0" class="hidden">
+										<label class="popup" data-content="Represents three-dimensional objects in two dimensions. A form of parallel projection, where all the projection lines are orthogonal to the projection plane.">Orthographic</label>
 									</div>
 								</div>
 							</div>
