@@ -82,8 +82,6 @@ Transfigure = Class.extend({
 		//playerLight.position.set(playerMapPosition.x, playerMapPosition.y, this.gridCellSize * 3);
 		//this.scene.add(playerLight);
 
-
-
 		// Position the player
 		var playerMapPosition = this.mapPositionToGridPosition(0, 0);
 		this.sceneObjects.player.position.x = playerMapPosition.x;
@@ -239,6 +237,7 @@ Transfigure = Class.extend({
 					var wallGeometry = new THREE.BoxGeometry(this.gridCellSize, this.gridCellSize, this.gridCellSize / 2);
 					//var wallGeometry = new THREE.SphereGeometry(this.gridCellSize * .75 / 2, 8, 8);
 					//var wallGeometry = new THREE.CircleGeometry(this.gridCellSize * .75 / 2, 32);
+					//var wallMaterial = new THREE.MeshNormalMaterial({});
 					var wallMaterial = new THREE.MeshLambertMaterial({
 						color: 0x2A2A2A,
 					});
@@ -336,12 +335,42 @@ Transfigure = Class.extend({
 		// Recursively call render
 		requestAnimationFrame(this.render.bind(this));
 
+		//this.sceneObjects.player.position.x += 1;
+		this.sceneObjects.player.position.y -= 1;
+		this.sceneObjects.player.rotateOnAxis(new THREE.Vector3(1, 0, 0), (Math.PI / 2) * .05);
+		//this.sceneObjects.player.translateOnAxis(new THREE.Vector3(0, 1, 0), 5);
+
+
 		// Update the controls
 		this.controls.update();
 
 		// Render the scene
 		this.renderer.render(this.scene, this.camera);
 	},
+
+	// MOVING WITH THE GAME LOOP
+	/*
+
+	Have an array of objects that will move
+	var objectsToMove
+
+	where it started
+	  where it will end
+
+	move object
+	  object // thing i am moving
+	  lastTime // the time in milliseconds when I last moved
+	  lastPosition // where it was at the end of the last game loop
+	  velocity // a Vector3 distance you want to move divided by time (60 moves per second) (gridCellSize / 60)
+	  
+	  // Computed
+	  timeDifference = now() - lastTime
+	  apply velocity to old position, set the new  position
+	  compute the new position from the old position
+
+	when you are done moving, remove yourself from the array
+
+	*/
 
 });
 
