@@ -368,7 +368,7 @@ Transfigure = Class.extend({
 	  apply velocity to old position, set the new  position
 	  compute the new position from the old position
 
-	when you are done moving, remove yourself from the array
+	when you are done moving, remove yourself from the array 
 
 	*/
 
