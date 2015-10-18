@@ -85,8 +85,6 @@ Player.prototype.findAndExecuteNextMove = function() {
 		var previousMove = this.moveHistory.pop();
 		this.move(previousMove.x, previousMove.y);
 	}
-
-	this['move'+possibleMoves[nextMoveIndex]]();
 }
 Player.prototype.move = function(x, y) {
 	this.activeCellElement.removeClass('active');
@@ -132,7 +130,7 @@ Player.prototype.move = function(x, y) {
 	//console.log('Moving to', x+', '+y);
 
 	if(this.activeCellElement.is('.finish')) {
-		console.log('Done! Took '+this.moveCount+' steps.');
+		//console.log('Done! Took '+this.moveCount+' steps.');
 
 		//clear the board
 		$('.cell').removeClass('walkedOn');
@@ -148,7 +146,7 @@ Player.prototype.move = function(x, y) {
 		this.previousY = null;
 
 		//reposition the finish point
-		console.table(this.level.map);
+		//console.table(this.level.map);
 
 		//check if its not a wall
 
@@ -211,7 +209,7 @@ Player.prototype.move = function(x, y) {
 		this.level.map[this.y][this.x] = 0;
 		this.level.map[newFinishY][newFinishX] = 9;
 		$('.cellRow'+newFinishY+ 'Column'+newFinishX).addClass('finish');
-		console.table(this.level.map);
+		//console.table(this.level.map);
 
 		//check if there is a path from new finish point to start point
 

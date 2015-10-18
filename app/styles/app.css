@@ -2,10 +2,10 @@ body {
 	overflow: hidden;
 }
 
-#game {
+#environment {
 	padding: 0;
 }
 
-#controls {
+#sidebar {
 	padding: 1rem 1.5rem;
 }

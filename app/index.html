@@ -13,18 +13,37 @@
 	    <link rel="stylesheet" type="text/css" href="../styles/fonts/lato/lato.css" />
 	    <link rel="stylesheet" type="text/css" href="../styles/semantic-ui/semantic-ui.css" />
 	    <link rel="stylesheet" type="text/css" href="../styles/transfigure.css" />
-	    <link rel="stylesheet" type="text/css" href="styles/game.css" />
+	    <link rel="stylesheet" type="text/css" href="styles/app.css" />
 
 	    <!-- Scripts -->
 	    <script src="../scripts/jquery/jQuery.js"></script>
+
 	    <script src="../scripts/semantic-ui/semantic-ui.js"></script>
+
 	    <script src="../scripts/objects/Class.js"></script>
+
+	    <script src="../scripts/types/Array.js"></script>
 	    <script src="../scripts/types/Number.js"></script>
+	    <script src="../scripts/types/Primitive.js"></script>
+	    <script src="../scripts/types/RegularExpression.js"></script>
+	    <script src="../scripts/types/String.js"></script>
+
 	    <script src="../scripts/three/Three.js"></script>
 	    <script src="../scripts/three/CombinedCamera.js"></script>
 	    <script src="../scripts/three/OrbitControls.js"></script>
-	    <script src="scripts/Transfigure.js"></script>
-	    <script src="scripts/TransfigureSettings.js"></script>
+
+	    <script src="App.js"></script>
+	    <script src="menu/Menu.js"></script>
+	    <script src="menu/MenuView.js"></script>
+	    <script src="controls/Controls.js"></script>
+	    <script src="environment/Environment.js"></script>
+
+	    <!--
+	    <script src="environment/Environment.js"></script>
+	    <script src="environment/camera/Camera.js"></script>
+	    <script src="environment/objects/entities/Entity.js"></script>
+	    <script src="environment/objects/entities/player/Player.js"></script>	    
+	    -->
 	    
 	</head>
 
@@ -50,9 +69,9 @@
 
 		<div class="ui grid" style="height: 100%; margin: 0;">
 			<div class="row" style="padding: 0;">
-				<div id="game" class="thirteen wide column">
+				<div id="environment" class="thirteen wide column">
 				</div>
-				<div id="controls" class="three wide column">
+				<div id="sidebar" class="three wide column">
 					<div class="ui form">
 						<div style="overflow: auto">
 							<h1 style="font-size: 1.5rem; float: left;">Controls</h1>
@@ -66,13 +85,6 @@
 						<div class="ui segment">
 							<div class="field">
 								<a id="cameraResetButton" class="ui button">Reset Camera</a>
-							</div>
-							<div class="field">
-
-								<div class="ui toggle checkbox">
-									<input type="checkbox" checked name="animate" tabindex="0" class="hidden">
-									<label>Animate</label>
-								</div>
 							</div>
 						</div>
 						<div class="ui segment">

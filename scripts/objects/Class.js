@@ -5,36 +5,36 @@
  */
 (function(global) {
   "use strict";
-  var fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
+  var fnTest = /xyz/.test(function(){xyz;}) ? /\bsuper\b/ : /.*/;
 
   // The base Class implementation (does nothing)
   function BaseClass(){}
 
   // Create a new Class that inherits from this class
   BaseClass.extend = function(props) {
-    var _super = this.prototype;
+    var superMethod = this.prototype;
 
     // Set up the prototype to inherit from the base class
     // (but without running the init constructor)
-    var proto = Object.create(_super);
+    var proto = Object.create(superMethod);
 
     // Copy the properties over onto the new prototype
     for (var name in props) {
       // Check if we're overwriting an existing function
       proto[name] = typeof props[name] === "function" && 
-        typeof _super[name] == "function" && fnTest.test(props[name])
+        typeof superMethod[name] == "function" && fnTest.test(props[name])
         ? (function(name, fn){
             return function() {
-              var tmp = this._super;
+              var tmp = this.super;
 
-              // Add a new ._super() method that is the same method
+              // Add a new .super() method that is the same method
               // but on the super-class
-              this._super = _super[name];
+              this.super = superMethod[name];
 
               // The method only need to be bound temporarily, so we
               // remove it when we're done executing
               var ret = fn.apply(this, arguments);        
-              this._super = tmp;
+              this.super = tmp;
 
               return ret;
             };
@@ -46,7 +46,7 @@
     var newClass = typeof proto.construct === "function"
       ? proto.hasOwnProperty("construct")
         ? proto.construct // All construction is actually done in the construct method
-        : function SubClass(){ _super.construct.apply(this, arguments); }
+        : function SubClass(){ superMethod.construct.apply(this, arguments); }
       : function EmptyClass(){};
 
     // Populate our constructed prototype object

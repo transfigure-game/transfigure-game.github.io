@@ -1,9 +1,11 @@
-TransfigureSettings = Class.extend({
+Menu = Class.extend({
 
-	transfigure: null,
+	app: null,
+	view: null,
 
-	construct: function(transfigure) {
-		this.transfigure = transfigure;
+	construct: function(app) {
+		this.app = app;
+		this.view = new MenuView();
 
 		this.listen();
 	},
@@ -28,15 +30,15 @@ TransfigureSettings = Class.extend({
 	},
 
 	cameraReset: function() {
-		this.transfigure.camera.lookAt(this.transfigure.sceneObjects.player.position);
+		this.app.environment.camera.lookAt(new THREE.Vector3(0, 0, 0));
 	},
 
 	cameraToOrthographic: function() {
-		this.transfigure.camera.toOrthographic();
+		this.app.environment.camera.toOrthographic();
 	},
 
 	cameraToPerspective: function() {
-		this.transfigure.camera.toPerspective();
+		this.app.environment.camera.toPerspective();
 	},
 
 });

@@ -1,0 +1,3 @@
+Controls = Class.extend({
+
+});

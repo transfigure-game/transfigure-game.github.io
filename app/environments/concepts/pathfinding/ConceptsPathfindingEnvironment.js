@@ -1,62 +1,36 @@
-Transfigure = Class.extend({
-
-	scene: null,
-	sceneObjects: {},
-	camera: null,
-	controls: null,
-	renderer: null,
-	settings: null,
+ConceptsPathfindingEnvironment = Environment.extend({
 
 	boardSize: 1000,
 	gridSize: 29,
 	gridCellSize: null,
-
 	map: null,
 
 	construct: function() {
 		// Calculate the grid cell size
 		this.gridCellSize = this.boardSize / this.gridSize;
 
-		// Create the scene
-		this.createScene();
-	
-		// Create the camera
-		this.createCamera();
-
-		// Create the controls
-		this.createControls();
-
-		// Create the renderer and add it to the DOM
-		this.createRenderer();
-
-		// Add settings
-		this.settings = new TransfigureSettings(this);
-
-		// Render the scene
-		this.render();
+		this.super();
 	},
 
-	createScene: function() {
-		this.scene = new THREE.Scene();
-		
+	buildScene: function() {
 		// Create the grid
 		var gridMaterial = new THREE.LineBasicMaterial({
 			color: 0x2F2F2F,
 		});
-		this.sceneObjects.grid = this.createGrid(gridMaterial, this.gridSize, this.gridSize, this.gridCellSize, this.gridCellSize);
-		this.sceneObjects.grid.position.z = 1;
-		//this.scene.add(this.sceneObjects.grid);
+		this.grid = this.createGrid(gridMaterial, this.gridSize, this.gridSize, this.gridCellSize, this.gridCellSize);
+		this.grid.position.z = 1;
+		//this.scene.add(this.grid);
 
 		// Initialize the map
 		this.map = this.generateMap(this.gridSize);
 		this.createMapOnBoard();
 
 		// Create the floor
-		this.sceneObjects.floor = new THREE.Mesh(new THREE.BoxGeometry(this.gridSize * this.gridCellSize, this.gridSize * this.gridCellSize, this.gridCellSize / 4), new THREE.MeshLambertMaterial({
+		this.floor = new THREE.Mesh(new THREE.BoxGeometry(this.gridSize * this.gridCellSize, this.gridSize * this.gridCellSize, this.gridCellSize / 4), new THREE.MeshLambertMaterial({
 			color: 0x090909,
 		}));
-		this.sceneObjects.floor.position.z = this.gridCellSize / 8 * -1;
-		this.scene.add(this.sceneObjects.floor);
+		this.floor.position.z = this.gridCellSize / 8 * -1;
+		this.scene.add(this.floor);
 
 		// Create ambient light
 		//var ambientLight = new THREE.AmbientLight(0x404040); // Soft white light
@@ -64,7 +38,7 @@ Transfigure = Class.extend({
 		this.scene.add(ambientLight);
 
 		// Create the player
-		this.sceneObjects.player = new THREE.Object3D();
+		this.player = new THREE.Object3D();
 
 		// Create the cube to represent the player
 		var playerCubeGeometry = new THREE.BoxGeometry(this.gridCellSize * .75, this.gridCellSize * .75, this.gridCellSize * .75);
@@ -72,31 +46,26 @@ Transfigure = Class.extend({
 			color: 0x00AAFF,
 		});
 		var playerCube = new THREE.Mesh(playerCubeGeometry, playerCubeMaterial);
-		this.sceneObjects.player.add(playerCube);
+		this.player.add(playerCube);
 
 		// Add a light to the player
 		var playerLight = new THREE.PointLight(0xFFFFFF, 3, this.gridCellSize * 4);
 		playerLight.position.z = this.gridCellSize * 3;
-		this.sceneObjects.player.add(playerLight);
+		this.player.add(playerLight);
 
 		//playerLight.position.set(playerMapPosition.x, playerMapPosition.y, this.gridCellSize * 3);
 		//this.scene.add(playerLight);
 
 		// Position the player
 		var playerMapPosition = this.mapPositionToGridPosition(0, 0);
-		this.sceneObjects.player.position.x = playerMapPosition.x;
-		this.sceneObjects.player.position.y = playerMapPosition.y;
-		this.sceneObjects.player.position.z = playerCubeGeometry.vertices[0].x;
+		this.player.position.x = playerMapPosition.x;
+		this.player.position.y = playerMapPosition.y;
+		this.player.position.z = playerCubeGeometry.vertices[0].x;
 
 		// Add the player to the scene
-		this.scene.add(this.sceneObjects.player);
-
-
-
+		this.scene.add(this.player);
 		
 		var finishLight = new THREE.PointLight(0xFFFFFF, 3, this.gridCellSize * 4);
-
-		
 
 		// Create the finish
 		//var finishGeometry = new THREE.SphereGeometry(this.gridCellSize * .75 / 2, 32, 32);
@@ -104,12 +73,12 @@ Transfigure = Class.extend({
 		var finishMaterial = new THREE.MeshLambertMaterial({
 			color: 0x8ABA56,
 		});
-		this.sceneObjects.finish = new THREE.Mesh(finishGeometry, finishMaterial);
+		this.finish = new THREE.Mesh(finishGeometry, finishMaterial);
 		var finishMapPosition = this.mapPositionToGridPosition(this.map.length - 1, this.map.length - 1);
-		this.sceneObjects.finish.position.x = finishMapPosition.x;
-		this.sceneObjects.finish.position.y = finishMapPosition.y;
-		this.sceneObjects.finish.position.z = finishGeometry.vertices[0].y;
-		this.scene.add(this.sceneObjects.finish);
+		this.finish.position.x = finishMapPosition.x;
+		this.finish.position.y = finishMapPosition.y;
+		this.finish.position.z = finishGeometry.vertices[0].y;
+		this.scene.add(this.finish);
 
 		
 		finishLight.position.set(finishMapPosition.x, finishMapPosition.y, this.gridCellSize * 3);
@@ -291,96 +260,11 @@ Transfigure = Class.extend({
 		return grid;
 	},
 
-	createCamera: function() {
-		this.camera = new THREE.CombinedCamera(($('#game').width() / 2), ($('#game').height() / 2), 90, 1, this.boardSize * 3, 1, this.boardSize * 3);
-		this.camera.position.z = this.boardSize;
-		this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-		this.camera.toPerspective();
-
-		return this.camera;
+	beforeRender: function() {
+		this.player.position.x += 1;
+		this.player.position.y -= 1;
+		this.player.rotateOnAxis(new THREE.Vector3(.5, .5, 0), (Math.PI / 2) * .05);
+		//this.player.translateOnAxis(new THREE.Vector3(0, 1, 0), 5);
 	},
-
-	createControls: function() {
-		this.controls = new THREE.OrbitControls(this.camera);
-		this.controls.enablePan = true;
-		this.controls.enableZoom = true;
-		this.controls.enableRotate = true;
-	},
-
-	createRenderer: function() {
-		this.renderer = new THREE.WebGLRenderer({
-			antialias: true,
-		});
-
-		this.renderer.setSize($('#game').width(), $('#game').height());
-
-		$('#game').append(this.renderer.domElement);
-
-		$(window).resize(function() {
-			this.resizeRenderer();
-		}.bind(this));
-
-		return this.renderer;
-	},
-
-	resizeRenderer: function() {
-		//this.camera.aspect = $('#game').width() / $('#game').height();
-		//this.camera.setSize($('#game').width() / $('#game').height());
-		this.camera.cameraP.aspect = $('#game').width() / $('#game').height();
-		this.camera.updateProjectionMatrix();
-		this.renderer.setSize($('#game').width(), $('#game').height());
-	},
-
-	render: function() {
-		// Recursively call render
-		requestAnimationFrame(this.render.bind(this));
-
-		//this.sceneObjects.player.position.x += 1;
-		this.sceneObjects.player.position.y -= 1;
-		this.sceneObjects.player.rotateOnAxis(new THREE.Vector3(1, 0, 0), (Math.PI / 2) * .05);
-		//this.sceneObjects.player.translateOnAxis(new THREE.Vector3(0, 1, 0), 5);
-
-
-		// Update the controls
-		this.controls.update();
-
-		// Render the scene
-		this.renderer.render(this.scene, this.camera);
-	},
-
-	// MOVING WITH THE GAME LOOP
-	/*
-
-	Have an array of objects that will move
-	var objectsToMove
-
-	where it started
-	  where it will end
-
-	move object
-	  object // thing i am moving
-	  lastTime // the time in milliseconds when I last moved
-	  lastPosition // where it was at the end of the last game loop
-	  velocity // a Vector3 distance you want to move divided by time (60 moves per second) (gridCellSize / 60)
-	  
-	  // Computed
-	  timeDifference = now() - lastTime
-	  apply velocity to old position, set the new  position
-	  compute the new position from the old position
-
-	when you are done moving, remove yourself from the array 
-
-	*/
-
-});
-
-$(document).ready(function() {
-	// Setup Semantic UI
-	$('.ui.checkbox').checkbox();
-	$('.popup').popup({
-    	position : 'right center',
-  	});
-
-	// Start the game
-	Transfigure = new Transfigure();
+	
 });

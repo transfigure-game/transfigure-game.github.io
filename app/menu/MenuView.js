@@ -1,0 +1,3 @@
+MenuView = Class.extend({
+
+});
