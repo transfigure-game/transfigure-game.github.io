@@ -76,12 +76,19 @@
 						<div style="overflow: auto">
 							<h1 style="font-size: 1.5rem; float: left;">Controls</h1>
 							<i class="large chevron right circle icon" style="cursor: pointer; float: right;"></i>
-
-							<div class="ui divider"></div>
-
-							<h2 style="font-size: 1.25rem;">Camera</h2>
 						</div>
 
+						<div class="ui divider"></div>
+
+						<h2 style="font-size: 1.25rem;">Environments</h2>
+						<div class="ui segment">
+							<p><a onclick="App.loadEnvironmentFromEnvironmentPath('concepts/shapes/cube/ConceptsShapesCubeEnvironment.js');" class="ui button">Cube</a></p>
+							<p><a onclick="App.loadEnvironmentFromEnvironmentPath('concepts/pathfinding/ConceptsPathfindingEnvironment.js');" class="ui button">Pathfinding</a></p>
+						</div>
+
+						<div class="ui divider"></div>
+
+						<h2 style="font-size: 1.25rem;">Camera</h2>
 						<div class="ui segment">
 							<div class="field">
 								<a id="cameraResetButton" class="ui button">Reset Camera</a>

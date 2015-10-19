@@ -1,19 +1,36 @@
 Environment = Class.extend({
 
-	domElement: null,
+	app: null,
 
 	scene: null,
-	movingObjects: [],
-
 	camera: null,
 	controls: null,
-	
-	renderer: null,
 
-	construct: function() {
-		// Reference the element on the DOM to store the environment
-		this.domElement = $('#environment');
+	shouldRender: true,
 
+	isStarted: false,
+	isStopped: false,
+
+	construct: function(app) {
+		this.app = app;
+	},
+
+	stop: function() {
+		this.isStarted = false;
+		this.isStopped = true;
+		this.shouldRender = false;
+	},
+
+	start: function() {
+		if(!this.isStarted) {
+			this.isStarted = true;
+			this.isStopped = false;
+			this.shouldRender = true;
+			this.render();
+		}
+	},
+
+	load: function() {
 		// Create and build the scene
 		this.scene = new THREE.Scene();
 		this.buildScene();
@@ -21,14 +38,51 @@ Environment = Class.extend({
 		// Create the camera
 		this.camera = this.createCamera();
 
-		// Create the renderer and add it to the DOM
-		this.renderer = this.createRenderer();
-
 		// Connect to app controls
 		this.controls = this.connectControls();
 
-		// Render the scene
-		this.render();
+		// Start the scene
+		this.start();
+	},
+
+	unload: function() {
+		// Stop the environment
+		this.stop();
+
+		if(this.scene) {
+			// This works
+			while(this.scene.children.length > 0) {
+				if(this.scene.children[this.scene.children.length - 1].geometry) {
+					//console.log('Can dispose geometry');
+					this.scene.children[this.scene.children.length - 1].geometry.dispose();
+				}
+				else {
+					//console.log('Cannot dispose geometry');
+				}
+				if(this.scene.children[this.scene.children.length - 1].material) {
+					//console.log('Can dispose material');
+					this.scene.children[this.scene.children.length - 1].material.dispose();	
+				}
+				else {
+					//console.log('Cannot dispose material');
+				}
+				if(this.scene.children[this.scene.children.length - 1].texture) {
+					//console.log('Can dispose texture');
+					this.scene.children[this.scene.children.length - 1].texture.dispose();
+				}
+				else {
+					//console.log('Cannot dispose texture');
+				}
+				
+				this.scene.remove(this.scene.children[this.scene.children.length - 1]);
+			}
+
+			this.scene = null;
+		}
+
+		this.app = null;
+		this.camera = null;
+		this.controls = null;
 	},
 
 	buildScene: function() {
@@ -36,11 +90,11 @@ Environment = Class.extend({
 	},
 
 	createCamera: function() {
-		var fov = 90;
+		var fov = 75;
 		var near = 1;
 		var far = 10000;
 
-		var camera = new THREE.CombinedCamera((this.domElement.width() / 2), (this.domElement.height() / 2), fov, near, far, near, far);
+		var camera = new THREE.CombinedCamera((this.app.rendererDomElement.width() / 2), (this.app.rendererDomElement.height() / 2), fov, near, far, near, far);
 		camera.position.z = 1000;
 		camera.lookAt(new THREE.Vector3(0, 0, 0));
 		camera.toPerspective();
@@ -61,48 +115,26 @@ Environment = Class.extend({
 		return controls;
 	},
 
-	createRenderer: function() {
-		// Create the renderer
-		var renderer = new THREE.WebGLRenderer({
-			antialias: true,
-			//alpha: true,
-		});
-
-		// Set its size
-		renderer.setSize(this.domElement.width(), this.domElement.height());
-
-		// Add the renderer to the DOM
-		this.domElement.append(renderer.domElement);
-
-		// Listen to window resize events
-		$(window).resize(function() {
-			this.resizeRenderer();
-		}.bind(this));
-
-		return renderer;
-	},
-
-	resizeRenderer: function() {
-		this.camera.cameraP.aspect = this.domElement.width() / this.domElement.height();
+	rendererResized: function(rendererWidth, rendererHeight) {
+		this.camera.cameraP.aspect = rendererWidth / rendererHeight;
 		this.camera.updateProjectionMatrix();
-		this.renderer.setSize(this.domElement.width(), this.domElement.height());
 	},
 
 	beforeRender: function() {
 	},
 
 	render: function() {
-		if(this.scene) {
+		if(this.scene && this.shouldRender) {
 			this.beforeRender();
-
-			// Recursively call render
-			requestAnimationFrame(this.render.bind(this));
 
 			// Update the controls
 			this.controls.update();
 
 			// Render the scene
-			this.renderer.render(this.scene, this.camera);
+			this.app.renderer.render(this.scene, this.camera);
+
+			// Recursively call render
+			requestAnimationFrame(this.render.bind(this));
 
 			this.afterRender();
 		}

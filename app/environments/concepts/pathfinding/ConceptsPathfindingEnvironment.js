@@ -1,7 +1,7 @@
 ConceptsPathfindingEnvironment = Environment.extend({
 
 	boardSize: 1000,
-	gridSize: 29,
+	gridSize: 19,
 	gridCellSize: null,
 	map: null,
 
@@ -9,7 +9,7 @@ ConceptsPathfindingEnvironment = Environment.extend({
 		// Calculate the grid cell size
 		this.gridCellSize = this.boardSize / this.gridSize;
 
-		this.super();
+		this.super.apply(this, arguments);
 	},
 
 	buildScene: function() {
@@ -49,9 +49,12 @@ ConceptsPathfindingEnvironment = Environment.extend({
 		this.player.add(playerCube);
 
 		// Add a light to the player
-		var playerLight = new THREE.PointLight(0xFFFFFF, 3, this.gridCellSize * 4);
-		playerLight.position.z = this.gridCellSize * 3;
+		var playerLight = new THREE.PointLight(0xFFFFFF, 5, this.gridCellSize * 4);
+		playerLight.position.z = this.gridCellSize;
 		this.player.add(playerLight);
+
+		var pointLightHelper = new THREE.PointLightHelper(playerLight, 10);
+		this.scene.add(pointLightHelper);
 
 		//playerLight.position.set(playerMapPosition.x, playerMapPosition.y, this.gridCellSize * 3);
 		//this.scene.add(playerLight);
@@ -60,7 +63,10 @@ ConceptsPathfindingEnvironment = Environment.extend({
 		var playerMapPosition = this.mapPositionToGridPosition(0, 0);
 		this.player.position.x = playerMapPosition.x;
 		this.player.position.y = playerMapPosition.y;
-		this.player.position.z = playerCubeGeometry.vertices[0].x;
+		//this.player.position.z = playerCubeGeometry.vertices[0].x;
+		this.player.position.z = this.gridCellSize;
+
+		this.player.velocity = new THREE.Vector3(Number.random(.75, 1, 4), Number.random(-.75, -1, 4), 0);
 
 		// Add the player to the scene
 		this.scene.add(this.player);
@@ -70,6 +76,9 @@ ConceptsPathfindingEnvironment = Environment.extend({
 		// Create the finish
 		//var finishGeometry = new THREE.SphereGeometry(this.gridCellSize * .75 / 2, 32, 32);
 		var finishGeometry = new THREE.BoxGeometry(this.gridCellSize * .75, this.gridCellSize * .75, this.gridCellSize * .75);
+		//var finishGeometry = new THREE.OctahedronGeometry(this.gridCellSize * .5, 0);
+		//var finishGeometry = new THREE.TorusGeometry(this.gridCellSize * .4, this.gridCellSize * .1, 16, 16);
+
 		var finishMaterial = new THREE.MeshLambertMaterial({
 			color: 0x8ABA56,
 		});
@@ -81,7 +90,7 @@ ConceptsPathfindingEnvironment = Environment.extend({
 		this.scene.add(this.finish);
 
 		
-		finishLight.position.set(finishMapPosition.x, finishMapPosition.y, this.gridCellSize * 3);
+		finishLight.position.set(finishMapPosition.x, finishMapPosition.y, this.gridCellSize * 1.5);
 		this.scene.add(finishLight);
 	},
 
@@ -194,7 +203,7 @@ ConceptsPathfindingEnvironment = Environment.extend({
 		// End
 		map[map.length - 1][map[map.length - 1].length - 1] = 9;
 
-		this.logMap(map);
+		//this.logMap(map);
 		return map;
 	},
 
@@ -261,10 +270,20 @@ ConceptsPathfindingEnvironment = Environment.extend({
 	},
 
 	beforeRender: function() {
-		this.player.position.x += 1;
-		this.player.position.y -= 1;
-		this.player.rotateOnAxis(new THREE.Vector3(.5, .5, 0), (Math.PI / 2) * .05);
-		//this.player.translateOnAxis(new THREE.Vector3(0, 1, 0), 5);
+		var bound = this.boardSize / 2;
+
+		if(this.player.position.x < bound * -1 || this.player.position.x > bound) {
+			this.player.velocity = new THREE.Vector3(this.player.velocity.x * -1, this.player.velocity.y, 0);
+		}
+		if(this.player.position.y < bound * -1 || this.player.position.y > bound) {
+			this.player.velocity = new THREE.Vector3(this.player.velocity.x, this.player.velocity.y * -1, 0);
+		}
+
+		this.player.translateOnAxis(this.player.velocity, 7.5);
+
+		//this.finish.rotation.x += .01;
+		//this.finish.rotation.y += .01;
+		//this.finish.rotation.z += .01;
 	},
 	
 });
