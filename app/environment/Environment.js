@@ -192,28 +192,4 @@ Environment = Class.extend({
 	afterRender: function() {
 	},
 
-	// MOVING WITH THE GAME LOOP
-	/*
-
-	Have an array of objects that will move
-	var objectsToMove
-
-	where it started
-	  where it will end
-
-	move object
-	  object // thing i am moving
-	  lastTime // the time in milliseconds when I last moved
-	  lastPosition // where it was at the end of the last game loop
-	  velocity // a Vector3 distance you want to move divided by time (60 moves per second) (gridCellSize / 60)
-	  
-	  // Computed
-	  timeDifference = now() - lastTime
-	  apply velocity to old position, set the new  position
-	  compute the new position from the old position
-
-	when you are done moving, remove yourself from the array 
-
-	*/
-
 });
