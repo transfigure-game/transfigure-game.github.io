@@ -136,6 +136,7 @@ App = Class.extend({
 	},
 
 	unloadEnvironment: function() {
+		//console.log('Unloading environment...');
 		this.environment.unload();
 		this.environment = null;
 	},
