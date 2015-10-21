@@ -1,4 +1,4 @@
-ConceptsShapesCubeEnvironment = Environment.extend({
+Environments.Concepts.Shapes.Cube.CubeEnvironment = Environment.extend({
 
 	cube: null,
 	pointLight: null,

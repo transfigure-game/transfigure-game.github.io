@@ -11,8 +11,45 @@ Environment = Class.extend({
 	isStarted: false,
 	isStopped: false,
 
-	construct: function(app) {
+	dependencies: null,
+	loadedDependencies: 0,
+	loadAfterInitialization: false,
+
+	construct: function(app, loadAfterInitialization) {
 		this.app = app;
+		this.loadAfterInitialization = loadAfterInitialization;
+
+		this.requireDependenciesAndInitialize();
+	},
+
+	requireDependenciesAndInitialize: function() {
+		// Require all of the necessary scripts
+		if(this.dependencies && this.dependencies.length) {
+			for(var i = 0; i < this.dependencies.length; i++) {
+				//console.log('Including scripts', this.dependencies[i]);
+				this.app.includeEnvironmentScript(this.dependencies[i], this.dependencyLoaded.bind(this));
+			}
+		}
+		// If there are no dependencies just initialize
+		else {
+			this.initialize();
+		}
+	},
+
+	dependencyLoaded: function() {
+		this.loadedDependencies++;
+		//console.log('this.loadedDependencies', this.loadedDependencies);
+
+		if(this.loadedDependencies == this.dependencies.length) {
+			//console.log('All dependencies loaded, initializing...');
+			this.initialize();
+		}
+	},
+
+	initialize: function() {
+		if(this.loadAfterInitialization) {
+			this.load();
+		}
 	},
 
 	stop: function() {

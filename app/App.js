@@ -72,15 +72,32 @@ App = Class.extend({
 		this.includeEnvironmentScript(environmentPath, this.loadEnvironment);
 	},
 
+	classNameToObject: function(string) {
+		//console.log('classNameToObject', string);
+		var object = global;
+
+		string.split('.').forEach(function(value) {
+			//console.log(value);
+			object = object[value];
+		});
+
+		return object;
+	},
+
 	includeEnvironmentScript: function(environmentPath, callback) {
-		var environmentUrl = 'environments/'+environmentPath;
-		var environmentClassName = environmentPath.split('/').reverse().first().replaceLast('.js', '');
+		var environmentUrl = 'environments/'+environmentPath+'.js';
+		var environmentClassName = ('environments/'+environmentPath).replaceLast('.js', '').replace('/', '-').replace(/-(.)/g, function(match, group1) {
+	        return '.'+group1.toUpperCase();
+	    }).uppercaseFirstCharacter();
 		//console.log('Loading', environmentUrl, environmentClassName);
 
 		// If the environment class is already loaded
-		if(global[environmentClassName]) {
+		var environmentClass = this.classNameToObject(environmentClassName);
+		if(environmentClass) {
 			// Run the callback
-			callback.call(this, environmentClassName);
+			if(callback) {
+				callback.call(this, environmentClassName);
+			}
 		}
 		else {
 			// Include the environment path
@@ -97,7 +114,9 @@ App = Class.extend({
 
 		// Bind the callback function the when the script is loaded
 		script.onload = script.onreadystatechange = function() {
-			callback.call(this, className);
+			if(callback) {
+				callback.call(this, className);
+			}
 		}.bind(this);
 
 		// Append the script tag to the DOM
@@ -109,8 +128,9 @@ App = Class.extend({
 			this.unloadEnvironment();
 		}
 
-		this.environment = new global[environmentClassName](this);
-		this.environment.load();
+		var environmentClass = this.classNameToObject(environmentClassName);
+
+		this.environment = new environmentClass(this, true);
 	},
 
 	unloadEnvironment: function() {
@@ -131,6 +151,6 @@ $(document).ready(function() {
   	global = window;
 
 	// Start the app
-	//App = new App('concepts/shapes/cube/ConceptsShapesCubeEnvironment.js');
-	App = new App('concepts/pathfinding/ConceptsPathfindingEnvironment.js');
+	//App = new App('concepts/shapes/cube/CubeEnvironment');
+	App = new App('concepts/pathfinding/PathfindingEnvironment');
 });
