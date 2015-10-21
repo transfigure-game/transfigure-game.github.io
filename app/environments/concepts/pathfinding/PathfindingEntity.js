@@ -17,9 +17,11 @@ Environments.Concepts.Pathfinding.PathfindingEntity = Class.extend({
 	},
 
 	generateObject3d: function() {		
+		return null;
 	},
 
 	move: function(row, column) {
+		
 	},
 
 });

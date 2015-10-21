@@ -139,16 +139,17 @@ Environments.Concepts.Pathfinding.PathfindingMap = Class.extend({
 
 		// Create the floor
 		var floor = new THREE.Mesh(new THREE.BoxGeometry(this.environment.gridSize * this.environment.gridCellSize, this.environment.gridSize * this.environment.gridCellSize, this.environment.gridCellSize / 4), new THREE.MeshLambertMaterial({
-			color: 0x090909,
+			//color: 0x090909,
+			color: 0x09AAFF,
 		}));
-		floor.position.z = this.environment.gridCellSize / 8 * -1;
-		object3d.add(floor);
+		floor.position.z = this.environment.gridCellSize / 4 / 2 * -1;
+		//object3d.add(floor);
 
 		for(var currentRow = 0; currentRow < this.array.length; currentRow++) {
 			for(var currentColumn = 0; currentColumn < this.array[currentRow].length; currentColumn++) {
 				// Walls
 				if(this.array[currentRow][currentColumn] == 5) {
-					var wallGeometry = new THREE.BoxGeometry(this.environment.gridCellSize, this.environment.gridCellSize, this.environment.gridCellSize / 2);
+					var wallGeometry = new THREE.BoxGeometry(this.environment.gridCellSize, this.environment.gridCellSize, this.environment.gridCellSize);
 					//var wallGeometry = new THREE.SphereGeometry(this.environment.gridCellSize * .75 / 2, 8, 8);
 					//var wallGeometry = new THREE.CircleGeometry(this.environment.gridCellSize * .75 / 2, 32);
 					//var wallMaterial = new THREE.MeshNormalMaterial({});
@@ -156,11 +157,13 @@ Environments.Concepts.Pathfinding.PathfindingMap = Class.extend({
 						color: 0x2A2A2A,
 					});
 					var wall = new THREE.Mesh(wallGeometry, wallMaterial);
+					wall.castShadow = true;
+					wall.receiveShadow = true;
 
 					var wallPosition = this.rowColumnToVector2(currentRow, currentColumn);
 					wall.position.x = wallPosition.x;
 					wall.position.y = wallPosition.y;
-					wall.position.z = wallGeometry.vertices[0].x / 2;
+					//wall.position.z = wallGeometry.vertices[0].x / 2;
 					object3d.add(wall);
 				}
 			}
@@ -188,9 +191,10 @@ Environments.Concepts.Pathfinding.PathfindingMap = Class.extend({
 
 	rowColumnToVector2: function(row, column) {
 		var vector2 = new THREE.Vector2(
-			row * this.environment.gridCellSize - (this.environment.boardSize / 2) + (this.environment.gridCellSize / 2),
-			((column * this.environment.gridCellSize - (this.environment.boardSize / 2 * -1) + (this.environment.gridCellSize / 2)) * -1) + this.environment.boardSize
+			column * this.environment.gridCellSize - (this.environment.boardSize / 2) + (this.environment.gridCellSize / 2), // x == column
+			(row * this.environment.gridCellSize * -1) + (this.environment.boardSize / 2) - (this.environment.gridCellSize / 2) // y == row
 		);
+		//console.log('rowColumnToVector2', row, vector2.y, column, vector2.x);
 
 		return vector2;
 	},

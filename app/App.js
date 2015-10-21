@@ -45,6 +45,8 @@ App = Class.extend({
 			antialias: true,
 			//alpha: true,
 		});
+		renderer.shadowMap.enabled = true;
+		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 		// Set its size
 		renderer.setSize(this.rendererDomElement.width(), this.rendererDomElement.height());
