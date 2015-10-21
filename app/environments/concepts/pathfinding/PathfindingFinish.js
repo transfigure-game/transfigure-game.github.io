@@ -22,7 +22,7 @@ Environments.Concepts.Pathfinding.PathfindingFinish = Environments.Concepts.Path
 			color: 0x8ABA56,
 		});
 		var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-		cube.position.z = this.environment.gridCellSize * .75 / 4 / 2 * -1;
+		cube.position.z = this.environment.gridCellSize * .75 / 2;
 
 		// Point light
 		var pointLight = new THREE.PointLight(0xFFFFFF, 5, this.environment.gridCellSize * 4);

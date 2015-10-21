@@ -33,13 +33,13 @@ Environments.Concepts.Pathfinding.PathfindingEnvironment = Environment.extend({
 	},
 
 	buildScene: function() {
-		// Add the map
-		this.scene.add(this.map.object3d);
-
 		// Create ambient light
 		//var ambientLight = new THREE.AmbientLight(0x404040); // Soft white light
 		var ambientLight = new THREE.AmbientLight(0xFFFFFF); // Full white
 		this.scene.add(ambientLight);
+
+		// Add the map
+		this.scene.add(this.map.object3d);
 
 		// Add the player to the scene
 		this.scene.add(this.player.object3d);

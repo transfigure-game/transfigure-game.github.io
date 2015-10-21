@@ -12,6 +12,10 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 	construct: function() {
 		this.super.apply(this, arguments);
 
+		// Set the starting row and column
+		this.row = 0;
+		this.column = 0;
+
 		// Position the player
 		var playerPosition = this.environment.map.rowColumnToVector2(this.row, this.column);
 		this.object3d.position.x = playerPosition.x;
@@ -36,7 +40,9 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 		var cubeMaterial = new THREE.MeshLambertMaterial({
 			color: 0x00AAFF,
 		});
+		//var cubeMaterial = new THREE.MeshNormalMaterial();
 		var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+		cube.position.z = this.environment.gridCellSize * .75 / 2;
 
 		// Point light
 		var pointLight = new THREE.PointLight(0xFFFFFF, 5, this.environment.gridCellSize * 4);
@@ -54,6 +60,8 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 	},
 
 	canMoveTo: function(row, column) {
+		//console.log(row, column, this.environment.map.array);
+
 		var canMoveTo = false;
 
 		// Row exists
@@ -158,86 +166,43 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 		//console.table(this.memoryMap);
 
 		if(cellValue == 9) {
-			console.log('Done! Took '+this.moveCount+' steps.');
+			//console.log('Done! Took '+this.moveCount+' steps.');
 
-			//// Clear the board
-			//this.moveHistory = [];
-			//this.moveCount = 0;
-			//this.memoryMap = [];
+			// Clear the board
+			this.moveHistory = [];
+			this.moveCount = 0;
+			this.memoryMap = [];
 
-			//this.previousColumn = null;
-			//this.previousRow = null;
+			this.previousColumn = null;
+			this.previousRow = null;
 
-			////reposition the finish point
-			////console.table(this.environment.map.array);
+			// Randomly select a point and see if it is valid or not
+			var newFinishRow = null;
+			var newFinishColumn = null;
+			while(true) {
+				// Get a random finish point
+				newFinishRow = Math.floor(Math.random() * (this.environment.map.array.length - 1));
+				newFinishColumn = Math.floor(Math.random() * (this.environment.map.array[0].length - 1));
 
-			////check if its not a wall
+				if(this.environment.map.array[newFinishRow][newFinishColumn] != 5 && this.environment.map.array[newFinishRow][newFinishColumn] != 9) {
+					// Break out of the while loop
+					break;
+				}
+			}
 
-			////OPTION 1 - Randomly select a point and see if it is valid or not
-			///*while(true)
-			//{
-			//	//get a random finish point
-			//	var newFinishY = Math.floor(Math.random() * (this.environment.map.array.length -  1)) + 0;
-			//	var newFinishX = Math.floor(Math.random() * (this.environment.map.array[0].length -  1)) + 0;
-			//	console.log(newFinishY, newFinishX);
+			//console.log('New finish row and column', newFinishRow, newFinishColumn);
 
-			//	if (this.environment.map.array[newFinishY][newFinishX] != 5 && this.environment.map.array[newFinishY][newFinishX] != 9)
-			//	{
-			//		break;
-			//	}
-			//}*/
+			// Position the finish
+			var finishPosition = this.environment.map.rowColumnToVector2(newFinishRow, newFinishColumn);
+			this.environment.finish.object3d.position.x = finishPosition.x;
+			this.environment.finish.object3d.position.y = finishPosition.y;
 			
-			////OPTION 2 - Same as option 1 but a bit faster. It randomly selects a cell location and if it is a wall
-			////or a finish point then it checks if any of the surrounding cell can be a valid new finish point
-			//while(true)
-			//{
-			//	//get a random finish point
-			//	var newFinishY = Math.floor(Math.random() * (this.environment.map.array.length -  1)) + 0;
-			//	var newFinishX = Math.floor(Math.random() * (this.environment.map.array[0].length -  1)) + 0;
+			// Make the previous end point walkable
+			this.environment.map.array[this.row][this.column] = 0;
+			this.environment.map.array[newFinishRow][newFinishColumn] = 9;
 
-			//	if (this.environment.map.array[newFinishY][newFinishX] != 5 && this.environment.map.array[newFinishY][newFinishX] != 9)
-			//	{
-			//		break;
-			//	}
-			//	else
-			//	{
-			//		if ( (newFinishX+1) < this.environment.map.array[0].length && this.environment.map.array[newFinishY][newFinishX+1] != 5 && this.environment.map.array[newFinishY][newFinishX+1] != 9)
-			//		{
-			//			newFinishX = newFinishX+1;
-			//			newFinishY = newFinishY;
-			//			break;
-			//		}
-			//		else if ( (newFinishY+1) < this.environment.map.array.length && this.environment.map.array[newFinishY+1][newFinishX] != 5 && this.environment.map.array[newFinishY+1][newFinishX] != 9)
-			//		{
-			//			newFinishX = newFinishX;
-			//			newFinishY = newFinishY+1;
-			//			break;
-			//		}
-			//		else if ( (newFinishX-1) >= 0 && this.environment.map.array[newFinishY][newFinishX-1] != 5 && this.environment.map.array[newFinishY][newFinishX-1] != 9)
-			//		{
-			//			newFinishX = newFinishX-1;
-			//			newFinishY = newFinishY;
-			//			break;
-			//		}
-			//		else if ( (newFinishY-1) >= 0 && this.environment.map.array[newFinishY-1][newFinishX] != 5 && this.environment.map.array[newFinishY-1][newFinishX] != 9)
-			//		{
-			//			newFinishX = newFinishX;
-			//			newFinishY = newFinishY-1;
-			//			break;
-			//		}
-			//	}
-			//}
-
-			////make the previous end point walkable
-			//this.environment.map.array[this.row][this.column] = 0;
-			//this.environment.map.array[newFinishY][newFinishX] = 9;
-			//$('.cellRow'+newFinishY+ 'Column'+newFinishX).addClass('finish');
-			////console.table(this.environment.map.array);
-
-			////check if there is a path from new finish point to start point
-
-			////play game again
-			//this.play();
+			// Play game again
+			this.play();
 		}
 		else {
 			this.moveCount++;

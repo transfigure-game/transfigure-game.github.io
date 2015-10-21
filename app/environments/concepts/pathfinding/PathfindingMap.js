@@ -139,11 +139,13 @@ Environments.Concepts.Pathfinding.PathfindingMap = Class.extend({
 
 		// Create the floor
 		var floor = new THREE.Mesh(new THREE.BoxGeometry(this.environment.gridSize * this.environment.gridCellSize, this.environment.gridSize * this.environment.gridCellSize, this.environment.gridCellSize / 4), new THREE.MeshLambertMaterial({
-			//color: 0x090909,
-			color: 0x09AAFF,
+			color: 0x090909,
+			//color: 0xFFFFFF,
 		}));
 		floor.position.z = this.environment.gridCellSize / 4 / 2 * -1;
-		//object3d.add(floor);
+		floor.castShadow = true;
+		floor.receiveShadow = true;
+		object3d.add(floor);
 
 		for(var currentRow = 0; currentRow < this.array.length; currentRow++) {
 			for(var currentColumn = 0; currentColumn < this.array[currentRow].length; currentColumn++) {
@@ -163,7 +165,7 @@ Environments.Concepts.Pathfinding.PathfindingMap = Class.extend({
 					var wallPosition = this.rowColumnToVector2(currentRow, currentColumn);
 					wall.position.x = wallPosition.x;
 					wall.position.y = wallPosition.y;
-					//wall.position.z = wallGeometry.vertices[0].x / 2;
+					wall.position.z = this.environment.gridCellSize / 2;
 					object3d.add(wall);
 				}
 			}
