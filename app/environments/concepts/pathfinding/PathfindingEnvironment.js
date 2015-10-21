@@ -1,7 +1,7 @@
 Environments.Concepts.Pathfinding.PathfindingEnvironment = Environment.extend({
 
 	boardSize: 1000,
-	gridSize: 19,
+	gridSize: 15,
 	gridCellSize: null,
 
 	map: null,

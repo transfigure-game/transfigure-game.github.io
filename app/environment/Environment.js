@@ -3,6 +3,7 @@ Environment = Class.extend({
 	app: null,
 
 	scene: null,
+	mover: null,
 	camera: null,
 	controls: null,
 
@@ -71,6 +72,9 @@ Environment = Class.extend({
 		// Create and build the scene
 		this.scene = new THREE.Scene();
 		this.buildScene();
+
+		// Create a mover to manage movement
+		this.mover = new Mover();
 	
 		// Create the camera
 		this.camera = this.createCamera();
@@ -163,6 +167,9 @@ Environment = Class.extend({
 	render: function() {
 		if(this.scene && this.shouldRender) {
 			this.beforeRender();
+
+			// Have the mover move things around
+			this.mover.move();
 
 			// Update the controls
 			this.controls.update();

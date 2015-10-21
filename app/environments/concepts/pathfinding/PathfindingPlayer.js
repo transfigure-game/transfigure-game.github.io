@@ -6,8 +6,13 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 	//moveLimit: 2,
 	memoryMap: [[]],
 
+	previousPosition: null,
+	position: null,
+
 	previousRow: 0,
 	previousColumn: 0,
+
+	speed: 50,
 
 	construct: function() {
 		this.super.apply(this, arguments);
@@ -146,10 +151,6 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 		this.row = row;
 		this.column = column;
 
-		var position = this.environment.map.rowColumnToVector2(this.row, this.column);
-		this.object3d.position.x = position.x;
-		this.object3d.position.y = position.y;
-
 		this.moveHistory.push({
 			row: this.row,
 			column: this.column,
@@ -206,8 +207,14 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 		}
 		else {
 			this.moveCount++;
-			//$('.moveCount').html(this.moveCount);
-			this.play();	
+
+			// Identify the new position
+			var newPosition = this.environment.map.rowColumnToVector2(this.row, this.column);
+
+			// Move
+			this.environment.mover.addMovement(new Movement(this.object3d, new Tween(new THREE.Vector3(this.object3d.position.x, this.object3d.position.y, this.object3d.position.z), new THREE.Vector3(newPosition.x, newPosition.y, this.object3d.position.z), this.speed, function() {
+				this.play();
+			}.bind(this))));
 		}
 	},
 
@@ -228,14 +235,12 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 	},
 
 	play: function() {
-		setTimeout(function() {
-			if(this.moveCount < this.moveLimit) {
-				this.findAndExecuteNextMove();
-			}
-			else {
-				console.log('Out of moves', this.moveCount);
-			}
-		}.bind(this), 50);
+		if(this.moveCount < this.moveLimit) {
+			this.findAndExecuteNextMove();
+		}
+		else {
+			console.log('Out of moves', this.moveCount);
+		}
 	}
 
 });
