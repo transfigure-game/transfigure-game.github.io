@@ -181,10 +181,11 @@ Environment = Class.extend({
 			// Render the scene
 			this.app.renderer.render(this.scene, this.camera);
 
-			// Recursively call render
-			requestAnimationFrame(this.render.bind(this));
-
 			this.afterRender();
+
+			// Recursively call render
+			requestAnimationFrame(this.render.bind(this)); // This is 60 FPS
+			//setTimeout(this.render.bind(this), 5); // This is 200 FPS
 		}
 	},
 
