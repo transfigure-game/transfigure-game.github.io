@@ -26,10 +26,8 @@ Environment = Class.extend({
 	requireDependenciesAndInitialize: function() {
 		// Require all of the necessary scripts
 		if(this.dependencies && this.dependencies.length) {
-			for(var i = 0; i < this.dependencies.length; i++) {
-				//console.log('Including scripts', this.dependencies[i]);
-				this.app.includeEnvironmentScript(this.dependencies[i], this.dependencyLoaded.bind(this));
-			}
+			//console.log('Loading dependency,', this.dependencies[this.loadedDependencies]);
+			this.app.includeEnvironmentScript(this.dependencies[0], this.dependencyLoaded.bind(this));
 		}
 		// If there are no dependencies just initialize
 		else {
@@ -41,9 +39,15 @@ Environment = Class.extend({
 		this.loadedDependencies++;
 		//console.log('this.loadedDependencies', this.loadedDependencies);
 
+		// If we are finished loading all dependencies
 		if(this.loadedDependencies == this.dependencies.length) {
 			//console.log('All dependencies loaded, initializing...');
 			this.initialize();
+		}
+		// Keep loading dependencies
+		else {
+			//console.log('Loading dependency,', this.dependencies[this.loadedDependencies]);
+			this.app.includeEnvironmentScript(this.dependencies[this.loadedDependencies], this.dependencyLoaded.bind(this));
 		}
 	},
 

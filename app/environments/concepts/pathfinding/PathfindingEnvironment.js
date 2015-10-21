@@ -9,10 +9,10 @@ Environments.Concepts.Pathfinding.PathfindingEnvironment = Environment.extend({
 	finish: null,
 
 	dependencies: [
-		'concepts/pathfinding/PathfindingMap',
 		'concepts/pathfinding/PathfindingEntity',
 		'concepts/pathfinding/PathfindingPlayer',
 		'concepts/pathfinding/PathfindingFinish',
+		'concepts/pathfinding/PathfindingMap',
 	],
 
 	initialize: function() {
