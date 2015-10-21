@@ -53,18 +53,5 @@ Environments.Concepts.Pathfinding.PathfindingEnvironment = Environment.extend({
 
 		this.super.apply(this, arguments);
 	},
-
-	beforeRender: function() {
-		//var bound = this.boardSize / 2;
-
-		//if(this.player.object3d.position.x < bound * -1 || this.player.object3d.position.x > bound) {
-		//	this.player.velocity = new THREE.Vector3(this.player.velocity.x * -1, this.player.velocity.y, 0);
-		//}
-		//if(this.player.object3d.position.y < bound * -1 || this.player.object3d.position.y > bound) {
-		//	this.player.velocity = new THREE.Vector3(this.player.velocity.x, this.player.velocity.y * -1, 0);
-		//}
-
-		//this.player.object3d.translateOnAxis(this.player.velocity, 7.5);
-	},
 	
 });
