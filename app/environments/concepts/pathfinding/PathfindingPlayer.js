@@ -118,17 +118,26 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 		//console.log('hasVisitedLeft', hasVisitedLeft);
 		//console.log('hasVisitedRight', hasVisitedRight);
 
+		var possibleMoves = [];
+
 		if(canMoveUp && !hasVisitedUp) {
-			this.moveUp();
+			possibleMoves.push('moveUp');
 		}
-		else if(canMoveDown && !hasVisitedDown) {
-			this.moveDown();
+		if(canMoveDown && !hasVisitedDown) {
+			possibleMoves.push('moveDown');
 		}
-		else if(canMoveLeft && !hasVisitedLeft) {
-			this.moveLeft();
+		if(canMoveLeft && !hasVisitedLeft) {
+			possibleMoves.push('moveLeft');
 		}
-		else if(canMoveRight && !hasVisitedRight) {
-			this.moveRight();
+		if(canMoveRight && !hasVisitedRight) {
+			possibleMoves.push('moveRight');
+		}
+
+		if(possibleMoves.length) {
+			// Pick and execute a random move
+			var moveMethod = possibleMoves[Math.floor(Math.random() * (possibleMoves.length))];
+			console.log(moveMethod, possibleMoves);
+			this[moveMethod].apply(this);
 		}
 		else if(this.moveHistory.length <= 1) {
 			console.log('No solution.');
