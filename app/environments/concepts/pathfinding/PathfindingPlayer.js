@@ -136,7 +136,7 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 		if(possibleMoves.length) {
 			// Pick and execute a random move
 			var moveMethod = possibleMoves[Math.floor(Math.random() * (possibleMoves.length))];
-			console.log(moveMethod, possibleMoves);
+			//console.log(moveMethod, possibleMoves);
 			this[moveMethod].apply(this);
 		}
 		else if(this.moveHistory.length <= 1) {
