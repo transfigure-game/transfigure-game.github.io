@@ -12,7 +12,7 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 	previousRow: 0,
 	previousColumn: 0,
 
-	speed: 50,
+	speed: 250,
 
 	construct: function() {
 		this.super.apply(this, arguments);
@@ -220,10 +220,25 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 			// Identify the new position
 			var newPosition = this.environment.map.rowColumnToVector2(this.row, this.column);
 
-			// Move
-			this.environment.mover.addMovement(new Movement(this.object3d, new Tween(new THREE.Vector3(this.object3d.position.x, this.object3d.position.y, this.object3d.position.z), new THREE.Vector3(newPosition.x, newPosition.y, this.object3d.position.z), this.speed, function() {
+			// Rotation tween
+			var rotationTweenStartVector3 = new THREE.Vector3(this.object3d.rotation.x, this.object3d.rotation.y, this.object3d.rotation.z);
+			var rotationTweenEndVector3 = new THREE.Vector3(this.object3d.rotation.x, this.object3d.rotation.y, this.object3d.rotation.z + (Math.PI / 4));
+			var rotationTweenDuration = this.speed;
+			var rotationTweenCallback = null;
+			var rotationTween = new Tween(rotationTweenStartVector3, rotationTweenEndVector3, rotationTweenDuration, rotationTweenCallback);
+			var rotationMovement = new Movement(this.object3d, rotationTween, 'rotation');
+			this.environment.mover.addMovement(rotationMovement);
+
+			// Position tween
+			var positionTweenStartVector3 = new THREE.Vector3(this.object3d.position.x, this.object3d.position.y, this.object3d.position.z);
+			var positionTweenEndVector3 = new THREE.Vector3(newPosition.x, newPosition.y, this.object3d.position.z);
+			var positionTweenDuration = this.speed;
+			var positionTweenCallback = function() {
 				this.play();
-			}.bind(this))));
+			}.bind(this)
+			var positionTween = new Tween(positionTweenStartVector3, positionTweenEndVector3, positionTweenDuration, positionTweenCallback);
+			var positionMovement = new Movement(this.object3d, positionTween, 'position');
+			this.environment.mover.addMovement(positionMovement);
 		}
 	},
 
