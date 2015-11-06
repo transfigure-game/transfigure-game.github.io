@@ -25,6 +25,7 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 		var playerPosition = this.environment.map.rowColumnToVector2(this.row, this.column);
 		this.object3d.position.x = playerPosition.x;
 		this.object3d.position.y = playerPosition.y;
+		//this.object3d.position.z = 200;
 
 		// Give the player a velocity
 		this.velocity = new THREE.Vector3(Number.random(.75, 1, 4), Number.random(-0.75, -1, 4), 0);
@@ -42,12 +43,12 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 
 		// Cube
 		var cubeGeometry = new THREE.BoxGeometry(this.environment.gridCellSize * .75, this.environment.gridCellSize * .75, this.environment.gridCellSize * .75);
-		var cubeMaterial = new THREE.MeshLambertMaterial({
-			color: 0x00AAFF,
-		});
-		//var cubeMaterial = new THREE.MeshNormalMaterial();
+		//var cubeGeometry = new THREE.SphereGeometry(this.environment.gridCellSize * .5, 16, 16);
+		//var cubeMaterial = new THREE.MeshLambertMaterial({
+		//	color: 0x00AAFF,
+		//});
+		var cubeMaterial = new THREE.MeshNormalMaterial();
 		var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-		cube.position.z = this.environment.gridCellSize * .75 / 2;
 
 		// Point light
 		var pointLight = new THREE.PointLight(0xFFFFFF, 5, this.environment.gridCellSize * 4);
@@ -55,11 +56,15 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 		//pointLight.position.z = this.environment.gridCellSize;
 
 		// Point light helper
-		var pointLightHelper = new THREE.PointLightHelper(pointLight, 10);
+		//var pointLightHelper = new THREE.PointLightHelper(pointLight, 10);
+		//object3d.add(pointLightHelper);
 		
 		//pointLight.add(pointLightHelper);
 		cube.add(pointLight);
 		object3d.add(cube);
+
+		// Adjust the object's position
+		object3d.position.z = this.environment.gridCellSize * .75 / 2;
 
 		return object3d;
 	},
@@ -215,14 +220,53 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 			this.play();
 		}
 		else {
+			//return;
+
 			this.moveCount++;
 
 			// Identify the new position
 			var newPosition = this.environment.map.rowColumnToVector2(this.row, this.column);
 
+			// Identify the direction
+			var direction = null;
+			if(this.previousRow < this.row) {
+				direction = 'down';
+			}
+			else if(this.previousRow > this.row) {
+				direction = 'up';
+			}
+			else if(this.previousColumn < this.column) {
+				direction = 'right';
+			}
+			else if(this.previousColumn > this.column) {
+				direction = 'left';
+			}
+			//console.log('direction', direction);
+
+			// Adjust my rotation
+			this.object3d.rotation.x = 0;
+			this.object3d.rotation.y = 0;
+			this.object3d.rotation.z = 0;
+			var rotationX = this.object3d.rotation.x;
+			var rotationY = this.object3d.rotation.y;
+			var rotationZ = this.object3d.rotation.z;
+			
+			if(direction == 'up') {
+				rotationX = rotationX + ((Math.PI / 2) * -1);
+			}
+			else if(direction == 'down') {
+				rotationX = rotationX + (Math.PI / 2);
+			}
+			else if(direction == 'left') {
+				rotationY = rotationY + ((Math.PI / 2) * -1);
+			}
+			else if(direction == 'right') {
+				rotationY = rotationY + (Math.PI / 2);
+			}
+
 			// Rotation tween
 			var rotationTweenStartVector3 = new THREE.Vector3(this.object3d.rotation.x, this.object3d.rotation.y, this.object3d.rotation.z);
-			var rotationTweenEndVector3 = new THREE.Vector3(this.object3d.rotation.x, this.object3d.rotation.y, this.object3d.rotation.z + (Math.PI / 4));
+			var rotationTweenEndVector3 = new THREE.Vector3(rotationX, rotationY, rotationZ);
 			var rotationTweenDuration = this.speed;
 			var rotationTweenCallback = null;
 			var rotationTween = new Tween(rotationTweenStartVector3, rotationTweenEndVector3, rotationTweenDuration, rotationTweenCallback);
