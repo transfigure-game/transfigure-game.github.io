@@ -139,8 +139,8 @@ Environments.Concepts.Pathfinding.PathfindingMap = Class.extend({
 
 		// Create the floor
 		var floor = new THREE.Mesh(new THREE.BoxGeometry(this.environment.gridSize * this.environment.gridCellSize, this.environment.gridSize * this.environment.gridCellSize, this.environment.gridCellSize / 4), new THREE.MeshLambertMaterial({
-			color: 0x090909,
-			//color: 0xFFFFFF,
+			//color: 0x090909,
+			color: 0xFFFFFF,
 		}));
 		floor.position.z = this.environment.gridCellSize / 4 / 2 * -1;
 		floor.castShadow = true;

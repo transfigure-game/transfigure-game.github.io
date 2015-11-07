@@ -12,7 +12,8 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 	previousRow: 0,
 	previousColumn: 0,
 
-	speed: 250,
+	//speed: 250,
+	speed: 2500,
 
 	construct: function() {
 		this.super.apply(this, arguments);
@@ -42,7 +43,7 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 		var object3d = new THREE.Object3D();
 
 		// Cube
-		var cubeGeometry = new THREE.BoxGeometry(this.environment.gridCellSize * .75, this.environment.gridCellSize * .75, this.environment.gridCellSize * .75);
+		var cubeGeometry = new THREE.BoxGeometry(this.environment.gridCellSize, this.environment.gridCellSize, this.environment.gridCellSize);
 		//var cubeGeometry = new THREE.SphereGeometry(this.environment.gridCellSize * .5, 16, 16);
 		//var cubeMaterial = new THREE.MeshLambertMaterial({
 		//	color: 0x00AAFF,
@@ -64,7 +65,7 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 		object3d.add(cube);
 
 		// Adjust the object's position
-		object3d.position.z = this.environment.gridCellSize * .75 / 2;
+		object3d.position.z = this.environment.gridCellSize / 2;
 
 		return object3d;
 	},
@@ -264,6 +265,10 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 				rotationY = rotationY + (Math.PI / 2);
 			}
 
+			//var maxPositionZ = (((Math.sqrt(2) * this.environment.gridCellSize) - this.environment.gridCellSize) / 2) + (this.environment.gridCellSize / 2);
+			var maxPositionZ = (((Math.sqrt(2) * this.environment.gridCellSize) - this.environment.gridCellSize)) + (this.environment.gridCellSize / 2);
+			var minPositionZ = (this.environment.gridCellSize / 2);
+
 			// Rotation tween
 			var rotationTweenStartVector3 = new THREE.Vector3(this.object3d.rotation.x, this.object3d.rotation.y, this.object3d.rotation.z);
 			var rotationTweenEndVector3 = new THREE.Vector3(rotationX, rotationY, rotationZ);
@@ -274,8 +279,8 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 			this.environment.mover.addMovement(rotationMovement);
 
 			// Position tween
-			var positionTweenStartVector3 = new THREE.Vector3(this.object3d.position.x, this.object3d.position.y, this.object3d.position.z);
-			var positionTweenEndVector3 = new THREE.Vector3(newPosition.x, newPosition.y, this.object3d.position.z);
+			var positionTweenStartVector3 = new THREE.Vector3(this.object3d.position.x, this.object3d.position.y, minPositionZ);
+			var positionTweenEndVector3 = new THREE.Vector3(newPosition.x, newPosition.y, maxPositionZ);
 			var positionTweenDuration = this.speed;
 			var positionTweenCallback = function() {
 				this.play();
