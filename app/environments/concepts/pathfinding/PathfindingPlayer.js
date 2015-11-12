@@ -12,8 +12,8 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 	previousRow: 0,
 	previousColumn: 0,
 
-	//speed: 250,
-	speed: 2500,
+	speed: 250,
+	//speed: 2500,
 
 	construct: function() {
 		this.super.apply(this, arguments);
