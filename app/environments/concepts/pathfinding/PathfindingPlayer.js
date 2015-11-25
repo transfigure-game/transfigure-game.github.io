@@ -12,8 +12,8 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 	previousRow: 0,
 	previousColumn: 0,
 
-	speed: 250,
-	//speed: 2500,
+	//speed: 250,
+	speed: 5000,
 
 	construct: function() {
 		this.super.apply(this, arguments);
@@ -225,9 +225,6 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 
 			this.moveCount++;
 
-			// Identify the new position
-			var newPosition = this.environment.map.rowColumnToVector2(this.row, this.column);
-
 			// Identify the direction
 			var direction = null;
 			if(this.previousRow < this.row) {
@@ -265,29 +262,59 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 				rotationY = rotationY + (Math.PI / 2);
 			}
 
-			//var maxPositionZ = (((Math.sqrt(2) * this.environment.gridCellSize) - this.environment.gridCellSize) / 2) + (this.environment.gridCellSize / 2);
-			var maxPositionZ = (((Math.sqrt(2) * this.environment.gridCellSize) - this.environment.gridCellSize)) + (this.environment.gridCellSize / 2);
+			// Identify the new position
+			var newPosition = this.environment.map.rowColumnToVector2(this.row, this.column);
+
+			var maxPositionZ = ((((Math.sqrt(2) * this.environment.gridCellSize) - this.environment.gridCellSize)) + (this.environment.gridCellSize / 2) / 2);
 			var minPositionZ = (this.environment.gridCellSize / 2);
 
-			// Rotation tween
-			var rotationTweenStartVector3 = new THREE.Vector3(this.object3d.rotation.x, this.object3d.rotation.y, this.object3d.rotation.z);
-			var rotationTweenEndVector3 = new THREE.Vector3(rotationX, rotationY, rotationZ);
-			var rotationTweenDuration = this.speed;
-			var rotationTweenCallback = null;
-			var rotationTween = new Tween(rotationTweenStartVector3, rotationTweenEndVector3, rotationTweenDuration, rotationTweenCallback);
-			var rotationMovement = new Movement(this.object3d, rotationTween, 'rotation');
-			this.environment.mover.addMovement(rotationMovement);
+			// Position tweens
+			var positionXTween = new Tween(this.object3d.position.x, newPosition.x, this.speed, Easing.linear);
+			var positionYTween = new Tween(this.object3d.position.y, newPosition.y, this.speed, Easing.linear);
+			var positionZFirstTween = new Tween(minPositionZ, maxPositionZ, this.speed / 2, Easing.quadraticOut);
+			var positionZSecondTween = new Tween(maxPositionZ, minPositionZ, this.speed / 2, Easing.quadraticIn);
+			positionZFirstTween.then(positionZSecondTween);
 
-			// Position tween
-			var positionTweenStartVector3 = new THREE.Vector3(this.object3d.position.x, this.object3d.position.y, minPositionZ);
-			var positionTweenEndVector3 = new THREE.Vector3(newPosition.x, newPosition.y, maxPositionZ);
-			var positionTweenDuration = this.speed;
-			var positionTweenCallback = function() {
+			// Rotation tweens
+			var rotationXTween = new Tween(this.object3d.rotation.x, rotationX, this.speed, Easing.linear);
+			var rotationYTween = new Tween(this.object3d.rotation.y, rotationY, this.speed, Easing.linear);
+			var rotationZTween = new Tween(this.object3d.rotation.z, rotationZ, this.speed, Easing.linear);
+
+			var movement = new Movement(this.object3d, [
+				{
+					type: 'position',
+					property: 'x',
+					tween: positionXTween,
+				},
+				{
+					type: 'position',
+					property: 'y',
+					tween: positionYTween,
+				},
+				{
+					type: 'position',
+					property: 'z',
+					tween: positionZFirstTween,
+				},
+				{
+					type: 'rotation',
+					property: 'x',
+					tween: rotationXTween,
+				},
+				{
+					type: 'rotation',
+					property: 'y',
+					tween: rotationYTween,
+				},
+				{
+					type: 'rotation',
+					property: 'z',
+					tween: rotationZTween,
+				},
+			], function() {
 				this.play();
-			}.bind(this)
-			var positionTween = new Tween(positionTweenStartVector3, positionTweenEndVector3, positionTweenDuration, positionTweenCallback);
-			var positionMovement = new Movement(this.object3d, positionTween, 'position');
-			this.environment.mover.addMovement(positionMovement);
+			}.bind(this));
+			this.environment.mover.addMovement(movement);
 		}
 	},
 

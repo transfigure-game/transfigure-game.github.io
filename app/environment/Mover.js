@@ -11,7 +11,7 @@ Mover = Class.extend({
 				var movement = this.movements[i].move();
 
 				// Remove all of the completed movements
-				if(movement.tween.isFinished) {
+				if(movement.isFinished) {
 					this.movements.splice(i, 1);
 				}
 			}

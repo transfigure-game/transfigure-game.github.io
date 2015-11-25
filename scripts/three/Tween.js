@@ -3,13 +3,13 @@ Tween = Class.extend({
 	startValue: null,
 	currentValue: null,
 	endValue: null,
+	deltaValue: null,
 
-	valueType: null, // Vector2, Vector3, 
+	durationInMilliseconds: null,
 
-	easing: 'linear',
+	easing: null,
 
 	timeStart: null,
-	durationInMilliseconds: null,
 	timeElapsed: null,
 	timeElapsedPercentage: null,
 	timeEnd: null,
@@ -18,28 +18,29 @@ Tween = Class.extend({
 
 	callback: null,
 
-	construct: function(startValue, endValue, durationInMilliseconds, callback) {
-		this.startValue = this.currentValue = startValue;
-		this.endValue = endValue;
+	currentTween: null,
+	nextTweens: null,
 
-		//console.log(this.startValue, this.endValue);
+	construct: function(startValue, endValue, durationInMilliseconds, easing, callback) {
+		this.startValue = startValue;
+		this.currentValue = this.startValue;
+		this.endValue = endValue;
+		this.deltaValue = this.endValue - this.startValue;
 
 		this.durationInMilliseconds = durationInMilliseconds;
+
+		this.easing = easing;
+		if(!this.easing) {
+			this.easing = Easing.linear;
+		}
+		
 		this.timeStart = new Date().getTime();
 		this.timeEnd = this.timeStart + this.durationInMilliseconds;
 
 		this.callback = callback;
 
-		this.identifyValueType();
-	},
-
-	identifyValueType: function() {
-		if(this.startValue instanceof THREE.Vector2) {
-			this.valueType = 'Vector2';
-		}
-		else if(this.startValue instanceof THREE.Vector3) {
-			this.valueType = 'Vector3';
-		}
+		this.currentTween = this;
+		this.nextTweens = [];
 	},
 
 	update: function() {
@@ -49,69 +50,70 @@ Tween = Class.extend({
 		var timeCurrent = new Date().getTime();
 
 		// Do nothing if the tween is finished
-		if(this.isFinished) {
+		if(this.currentTween.isFinished) {
 			// Do nothing
 		}
 		// Do nothing if the current time is before the tween should start
-		else if(timeCurrent < this.timeStart) {
+		else if(timeCurrent < this.currentTween.timeStart) {
 			// Do nothing
 		}
 		// Complete the tween if the current time is past the end time
-		else if(timeCurrent > this.timeEnd) {
-			this.finish();
+		else if(timeCurrent > this.currentTween.timeEnd) {
+			this.currentTween.finish();
 		}
 		// Update the current value if the tween is running
 		else {
 			// Get the elapsed time
-			this.timeElapsed = timeCurrent - this.timeStart;
+			this.currentTween.timeElapsed = timeCurrent - this.currentTween.timeStart;
 
 			// Calculate our progress
-			this.timeElapsedPercentage = this.timeElapsed / this.durationInMilliseconds;
-			//console.log(this.timeElapsedPercentage);
+			this.currentTween.timeElapsedPercentage = this.currentTween.timeElapsed / this.currentTween.durationInMilliseconds;
+			//console.log(this.currentTween.timeElapsedPercentage);
 
-			// Calculate what currentValue should be based on the value type as well as the easing function
-			if(this.valueType == 'Vector2') {
-				var deltaX = this.endValue.x - this.startValue.x;
-				var deltaY = this.endValue.y - this.startValue.y;
+			// Apply easing
+			var easedTimeElapsedPercentage = this.currentTween.easing(this.currentTween.timeElapsedPercentage);
 
-				var currentX = deltaX * this.timeElapsedPercentage;
-				var currentY = deltaY * this.timeElapsedPercentage;
-
-				this.currentValue = new THREE.Vector2(currentX, currentY);
-			}
-			else if(this.valueType == 'Vector3') {
-				//console.log('this.timeElapsedPercentage', this.timeElapsedPercentage);
-
-				var deltaX = this.endValue.x - this.startValue.x;
-				var deltaY = this.endValue.y - this.startValue.y;
-				var deltaZ = this.endValue.z - this.startValue.z;
-				//console.log('deltaX', deltaX);
-				//console.log('deltaY', deltaY);
-				//console.log('deltaZ', deltaZ);
-
-				var currentX = this.startValue.x + (deltaX * this.timeElapsedPercentage);
-				var currentY = this.startValue.y + (deltaY * this.timeElapsedPercentage);
-				var currentZ = this.startValue.z + (deltaZ * this.timeElapsedPercentage);
-
-				//console.log('-----------------')
-				//console.log(this.currentValue);
-				this.currentValue = new THREE.Vector3(currentX, currentY, currentZ);
-				//console.log(this.currentValue);
-				//console.log('-----------------')
-			}
+			// Calculate what currentValue should be			
+			this.currentTween.currentValue = this.currentTween.startValue + (this.currentTween.deltaValue * easedTimeElapsedPercentage);
 		}
+
+		//console.log(this.currentTween.currentValue);
 
 		return this;
 	},
 
-	finish: function() {
-		this.currentValue = this.endValue;
-		this.timeElapsed = this.durationInMilliseconds;
-		this.isFinished = true;
+	then: function(tween) {
+		var previousTween = this;
 
-		if(this.callback) {
-			this.callback();
+		//if(this.nextTweens.length > 1) {
+		//	previousTween = this.nextTweens[this.nextTweens.length - 1];
+		//}
+
+		tween.timeStart = previousTween.timeEnd;
+		tween.timeEnd = tween.timeStart + tween.durationInMilliseconds;
+
+		this.nextTweens.push(tween);
+	},
+
+	finish: function() {
+		// Check to see if we move to a chained tween
+		var nextTween = this.nextTweens.pop();
+		if(nextTween) {
+			//console.log('switching tweens')
+			this.currentTween = nextTween;
+			this.update();
 		}
+		else {
+			this.currentValue = this.endValue;
+			this.timeElapsed = this.durationInMilliseconds;
+			this.isFinished = true;
+
+			if(this.callback) {
+				this.callback();
+			}	
+		}
+
+		return this;
 	},
 
 });

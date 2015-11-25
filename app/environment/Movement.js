@@ -1,30 +1,44 @@
 Movement = Class.extend({
 
 	object3d: null,
-	tween: null,
-	type: null,
+	tweenMap: null,
 
-	construct: function(object3d, tween, type) {
+	isFinished: false,
+
+	construct: function(object3d, tweenMap, callback) {
 		this.object3d = object3d;
-		this.tween = tween;
-		this.type = type;
+		this.tweenMap = tweenMap;
+		this.callback = callback;
 	},
 
 	move: function() {
-		var newVector3 = this.tween.update().currentValue;
+		var isFinished = true;
 
-		if(this.type == 'position') {
-			this.object3d.position.x = newVector3.x;
-			this.object3d.position.y = newVector3.y;
-			this.object3d.position.z = newVector3.z;
+		for(var i = 0; i < this.tweenMap.length; i++) {
+			var currentTweenMapItem = this.tweenMap[i];
+
+			var currentValue = currentTweenMapItem.tween.update().currentTween.currentValue;
+
+			if(!currentTweenMapItem.tween.currentTween.isFinished) {
+				isFinished = false;
+			}
+
+			this.object3d[currentTweenMapItem.type][currentTweenMapItem.property] = currentValue;
 		}
-		else if(this.type == 'rotation') {
-			this.object3d.rotation.x = newVector3.x;
-			this.object3d.rotation.y = newVector3.y;
-			this.object3d.rotation.z = newVector3.z;
+
+		if(isFinished) {
+			this.finish();
 		}
 
 		return this;
+	},
+
+	finish: function() {
+		this.isFinished = true;
+
+		if(this.callback) {
+			this.callback();
+		}
 	},
 
 });
