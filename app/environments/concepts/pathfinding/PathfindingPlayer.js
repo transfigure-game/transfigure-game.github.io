@@ -59,7 +59,7 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 		// Point light helper
 		//var pointLightHelper = new THREE.PointLightHelper(pointLight, 10);
 		//object3d.add(pointLightHelper);
-		
+
 		//pointLight.add(pointLightHelper);
 		cube.add(pointLight);
 		object3d.add(cube);
@@ -212,7 +212,7 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 			var finishPosition = this.environment.map.rowColumnToVector2(newFinishRow, newFinishColumn);
 			this.environment.finish.object3d.position.x = finishPosition.x;
 			this.environment.finish.object3d.position.y = finishPosition.y;
-			
+
 			// Make the previous end point walkable
 			this.environment.map.array[this.row][this.column] = 0;
 			this.environment.map.array[newFinishRow][newFinishColumn] = 9;
@@ -248,7 +248,7 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 			var rotationX = this.object3d.rotation.x;
 			var rotationY = this.object3d.rotation.y;
 			var rotationZ = this.object3d.rotation.z;
-			
+
 			if(direction == 'up') {
 				rotationX = rotationX + ((Math.PI / 2) * -1);
 			}
@@ -265,8 +265,9 @@ Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Path
 			// Identify the new position
 			var newPosition = this.environment.map.rowColumnToVector2(this.row, this.column);
 
-			var maxPositionZ = ((((Math.sqrt(2) * this.environment.gridCellSize) - this.environment.gridCellSize)) + (this.environment.gridCellSize / 2) / 2);
-			var minPositionZ = (this.environment.gridCellSize / 2);
+			var zChange = ((Math.sqrt(2) * this.environment.gridCellSize) - this.environment.gridCellSize) / 2;
+			var minPositionZ = this.object3d.position.z;
+			var maxPositionZ = this.object3d.position.z + zChange;
 
 			// Position tweens
 			var positionXTween = new Tween(this.object3d.position.x, newPosition.x, this.speed, Easing.linear);
