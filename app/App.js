@@ -155,5 +155,5 @@ $(document).ready(function() {
 
 	// Start the app
 	//App = new App('concepts/shapes/cube/CubeEnvironment');
-	App = new App('concepts/pathfinding/PathfindingEnvironment');
+	App = new App('concepts/maze/MazeEnvironment');
 });

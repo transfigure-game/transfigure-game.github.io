@@ -1,4 +1,4 @@
-Environments.Concepts.Pathfinding.PathfindingPlayer = Environments.Concepts.Pathfinding.PathfindingEntity.extend({
+Environments.Concepts.Maze.MazePlayer = Environments.Concepts.Maze.MazeEntity.extend({
 
 	moveHistory: [],
 	moveCount: 0,

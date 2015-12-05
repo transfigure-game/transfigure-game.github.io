@@ -96,7 +96,7 @@ Game.prototype.playLevel = function(levelIndex) {
   // Get the level
   var level = this.levels[levelIndex];
 
-  level.map = this.generateMap(15, 25);
+  level.map = this.generateMap(13, 13);
 
   // Render the level
   this.renderLevel(level);

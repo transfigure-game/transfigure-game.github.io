@@ -1,4 +1,4 @@
-Environments.Concepts.Pathfinding.PathfindingFinish = Environments.Concepts.Pathfinding.PathfindingEntity.extend({
+Environments.Concepts.Maze.MazeFinish = Environments.Concepts.Maze.MazeEntity.extend({
 
 	construct: function() {
 		this.super.apply(this, arguments);

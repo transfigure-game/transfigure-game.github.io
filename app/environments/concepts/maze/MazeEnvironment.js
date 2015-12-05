@@ -1,4 +1,4 @@
-Environments.Concepts.Pathfinding.PathfindingEnvironment = Environment.extend({
+Environments.Concepts.Maze.MazeEnvironment = Environment.extend({
 
 	boardSize: 1000,
 	gridSize: 15,
@@ -9,10 +9,10 @@ Environments.Concepts.Pathfinding.PathfindingEnvironment = Environment.extend({
 	finish: null,
 
 	dependencies: [
-		'concepts/pathfinding/PathfindingEntity',
-		'concepts/pathfinding/PathfindingPlayer',
-		'concepts/pathfinding/PathfindingFinish',
-		'concepts/pathfinding/PathfindingMap',
+		'concepts/maze/MazeEntity',
+		'concepts/maze/MazePlayer',
+		'concepts/maze/MazeFinish',
+		'concepts/maze/MazeMap',
 	],
 
 	initialize: function() {
@@ -21,13 +21,13 @@ Environments.Concepts.Pathfinding.PathfindingEnvironment = Environment.extend({
 		//console.log(this.boardSize, this.gridSize, this.gridCellSize);
 
 		// Create the map
-		this.map = new Environments.Concepts.Pathfinding.PathfindingMap(this);
+		this.map = new Environments.Concepts.Maze.MazeMap(this);
 
 		// Create the player (top left)
-		this.player = new Environments.Concepts.Pathfinding.PathfindingPlayer(this);
+		this.player = new Environments.Concepts.Maze.MazePlayer(this);
 
 		// Create the finish (bottom right)
-		this.finish = new Environments.Concepts.Pathfinding.PathfindingFinish(this);
+		this.finish = new Environments.Concepts.Maze.MazeFinish(this);
 
 		this.super.apply(this, arguments);
 	},

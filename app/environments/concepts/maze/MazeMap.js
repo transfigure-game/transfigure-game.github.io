@@ -1,4 +1,4 @@
-Environments.Concepts.Pathfinding.PathfindingMap = Class.extend({
+Environments.Concepts.Maze.MazeMap = Class.extend({
 
 	environment: null,
 

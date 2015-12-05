@@ -1,6 +1,6 @@
 Environments = {
 	Concepts: {
-		Pathfinding: {
+		Maze: {
 		},
 		Shapes: {
 			Cube: {

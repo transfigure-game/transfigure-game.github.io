@@ -1,4 +1,4 @@
-Environments.Concepts.Pathfinding.PathfindingEntity = Class.extend({
+Environments.Concepts.Maze.MazeEntity = Class.extend({
 
 	environment: null,
 
